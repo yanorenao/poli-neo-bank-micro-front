@@ -1,8 +1,6 @@
 /**
- * Flux BankStore - Single source of truth for all application state
- * Listens to Dispatcher and emits changes to Views
- * 
- * Architecture: Action → Dispatcher → Store → View
+ * Flux BankStore - Fuente única de verdad para todo el estado de la aplicación.
+ * Lógica: Escucha al Dispatcher, actualiza el estado interno y emite eventos de cambio a las vistas.
  */
 
 import { AppDispatcher, type Action } from './Dispatcher';
@@ -12,11 +10,17 @@ import type { Contact } from '../mocks/api';
 const CHANGE_EVENT = 'change';
 
 /**
- * Simple EventEmitter implementation for browser
+ * Implementación simple de EventEmitter para el navegador.
+ * Lógica: Gestiona suscripciones y emisiones de eventos personalizados.
  */
 class EventEmitter {
   private events: Map<string, Set<Function>> = new Map();
 
+  /**
+   * Registra un callback para un evento específico.
+   * Input: event (string), callback (Function).
+   * Output: void.
+   */
   on(event: string, callback: Function): void {
     if (!this.events.has(event)) {
       this.events.set(event, new Set());
@@ -24,6 +28,11 @@ class EventEmitter {
     this.events.get(event)!.add(callback);
   }
 
+  /**
+   * Elimina un callback registrado para un evento.
+   * Input: event (string), callback (Function).
+   * Output: void.
+   */
   removeListener(event: string, callback: Function): void {
     const callbacks = this.events.get(event);
     if (callbacks) {
@@ -31,6 +40,11 @@ class EventEmitter {
     }
   }
 
+  /**
+   * Dispara un evento notificando a todos los suscriptores.
+   * Input: event (string), ...args (any[]).
+   * Output: void.
+   */
   emit(event: string, ...args: any[]): void {
     const callbacks = this.events.get(event);
     if (callbacks) {
@@ -40,7 +54,7 @@ class EventEmitter {
 }
 
 /**
- * Application State Interface
+ * Interfaz del estado de la aplicación (BankStoreState).
  */
 interface BankStoreState {
   // Balance state
@@ -61,8 +75,8 @@ interface BankStoreState {
 }
 
 /**
- * BankStore - Main application store
- * Extends EventEmitter to notify views of changes
+ * BankStore - Store principal de la aplicación.
+ * Lógica: Procesa acciones del Dispatcher para mutar el estado y notificar a los componentes.
  */
 class BankStore extends EventEmitter {
   private state: BankStoreState = {
@@ -80,13 +94,15 @@ class BankStore extends EventEmitter {
 
   constructor() {
     super();
-    // Register with dispatcher - all actions flow through here
+    // Se registra en el dispatcher: todas las acciones fluyen por aquí.
     AppDispatcher.register(this.handleAction.bind(this));
   }
 
   /**
-   * Main action handler - called by Dispatcher for every action
-   * This is where Flux unidirectional flow is enforced
+   * Manejador principal de acciones enviado por el Dispatcher.
+   * Lógica: Evalúa el tipo de acción y actualiza el estado según corresponda.
+   * Input: action (Action).
+   * Output: void.
    */
   private handleAction(action: Action): void {
     switch (action.type) {
@@ -142,7 +158,7 @@ class BankStore extends EventEmitter {
         this.state.transferLoading = false;
         this.state.transferSuccess = true;
         this.state.transactionId = action.payload.transactionId;
-        // Update balance with new value
+        // Actualiza el balance con el nuevo valor.
         this.state.balance = action.payload.newBalance;
         this.state.transferError = null;
         this.emitChange();
@@ -164,35 +180,39 @@ class BankStore extends EventEmitter {
         break;
 
       default:
-        // No action taken for unknown action types
         break;
     }
   }
 
   /**
-   * Emit change event to notify views
+   * Emite un evento de cambio para notificar a las vistas.
+   * Input: Ninguno.
+   * Output: void.
    */
   private emitChange(): void {
     this.emit(CHANGE_EVENT);
   }
 
   /**
-   * Subscribe to store changes
+   * Suscribe un callback a los cambios del store.
+   * Input: callback (() => void).
+   * Output: void.
    */
   addChangeListener(callback: () => void): void {
     this.on(CHANGE_EVENT, callback);
   }
 
   /**
-   * Unsubscribe from store changes
+   * Elimina la suscripción de un callback.
+   * Input: callback (() => void).
+   * Output: void.
    */
   removeChangeListener(callback: () => void): void {
     this.removeListener(CHANGE_EVENT, callback);
   }
 
   /**
-   * Public getters for state (read-only access)
-   * Views should never mutate store state directly
+   * Getters públicos para el estado (acceso de solo lectura).
    */
 
   getBalance(): number | null {
@@ -236,12 +256,14 @@ class BankStore extends EventEmitter {
   }
 
   /**
-   * Get complete state snapshot (useful for debugging)
+   * Obtiene una instantánea completa del estado.
+   * Input: Ninguno.
+   * Output: Readonly<BankStoreState>.
    */
   getState(): Readonly<BankStoreState> {
     return { ...this.state };
   }
 }
 
-// Singleton instance - single source of truth
+// Instancia Singleton: única fuente de verdad.
 export default new BankStore();

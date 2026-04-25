@@ -6,6 +6,10 @@ import { wizardContainer, wizardInnerPadding } from '../styles/tailwindClasses';
 import type { Contact } from '../mocks/api';
 import { Check } from 'lucide-react';
 
+/**
+ * StepIndicator - Componente que muestra el progreso visual del proceso.
+ * Lógica: Renderiza una línea de tiempo con pasos completados, actuales y pendientes.
+ */
 interface StepIndicatorProps {
     currentStep: number;
     totalSteps: number;
@@ -60,21 +64,40 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, totalSteps }
     );
 };
 
+/**
+ * TransferWizard - Componente principal que orquesta el flujo de transferencia.
+ * Lógica: Gestiona el estado de los pasos y los datos temporales del destinatario y monto.
+ */
 export const TransferWizard: React.FC = () => {
     const [step, setStep] = useState<number>(1);
     const [recipient, setRecipient] = useState<Contact | null>(null);
     const [amount, setAmount] = useState<number>(0);
 
+    /**
+     * Selecciona un contacto y avanza al siguiente paso.
+     * Input: contact (Contact).
+     * Output: void.
+     */
     const handleRecipientSelect = (contact: Contact) => {
         setRecipient(contact);
         setStep(2);
     };
 
+    /**
+     * Define el monto y avanza a la confirmación.
+     * Input: val (number).
+     * Output: void.
+     */
     const handleAmountNext = (val: number) => {
         setAmount(val);
         setStep(3);
     };
 
+    /**
+     * Reinicia el asistente a su estado inicial.
+     * Input: Ninguno.
+     * Output: void.
+     */
     const handleFinish = () => {
         setStep(1);
         setRecipient(null);

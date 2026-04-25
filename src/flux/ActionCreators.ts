@@ -1,6 +1,6 @@
 /**
- * Flux Action Creators - Functions that create and dispatch actions
- * All state changes flow through these action creators → dispatcher → stores
+ * Flux Action Creators - Funciones que crean y despachan acciones.
+ * Lógica: Orquestan llamadas asíncronas a la API y notifican al Dispatcher los cambios de estado.
  */
 
 import { AppDispatcher } from './Dispatcher';
@@ -8,11 +8,13 @@ import * as ActionTypes from './ActionTypes';
 import { getBalance, getContacts, postTransfer, type TransferRequest } from '../mocks/api';
 
 /**
- * Balance Action Creators
+ * Creadores de acciones para el Saldo (Balance).
  */
 export const BalanceActions = {
   /**
-   * Fetch user balance from server
+   * Obtiene el saldo del usuario desde el servidor.
+   * Input: Ninguno.
+   * Output: Despacha FETCH_BALANCE_SUCCESS con el saldo o FETCH_BALANCE_ERROR.
    */
   fetchBalance: async () => {
     AppDispatcher.dispatch({
@@ -35,11 +37,13 @@ export const BalanceActions = {
 };
 
 /**
- * Contacts Action Creators
+ * Creadores de acciones para Contactos.
  */
 export const ContactsActions = {
   /**
-   * Fetch contacts list from server
+   * Obtiene la lista de contactos desde el servidor.
+   * Input: Ninguno.
+   * Output: Despacha FETCH_CONTACTS_SUCCESS con la lista o FETCH_CONTACTS_ERROR.
    */
   fetchContacts: async () => {
     AppDispatcher.dispatch({
@@ -62,11 +66,13 @@ export const ContactsActions = {
 };
 
 /**
- * Transfer Action Creators
+ * Creadores de acciones para Transferencias.
  */
 export const TransferActions = {
   /**
-   * Execute a money transfer
+   * Ejecuta una transferencia de dinero.
+   * Input: request (TransferRequest), currentBalance (number).
+   * Output: Despacha TRANSFER_SUCCESS con el nuevo saldo o TRANSFER_ERROR.
    */
   executeTransfer: async (request: TransferRequest, currentBalance: number) => {
     AppDispatcher.dispatch({
@@ -91,7 +97,9 @@ export const TransferActions = {
   },
 
   /**
-   * Reset transfer state (errors, success flags, etc)
+   * Reinicia el estado de la transferencia.
+   * Input: Ninguno.
+   * Output: Despacha TRANSFER_RESET.
    */
   resetTransfer: () => {
     AppDispatcher.dispatch({

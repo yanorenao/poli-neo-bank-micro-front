@@ -1,6 +1,6 @@
 /**
- * Flux Dispatcher - Central hub for all actions
- * All data flows through the dispatcher to stores
+ * Flux Dispatcher - Hub central para todas las acciones.
+ * Lógica: Gestiona el flujo unidireccional de datos distribuyendo acciones a los stores registrados.
  */
 
 export interface Action<T = any> {
@@ -15,8 +15,10 @@ class Dispatcher {
   private isDispatching = false;
 
   /**
-   * Register a callback to be invoked with every dispatched action
-   * Returns a token that can be used to unregister the callback
+   * Registra un callback para ser invocado con cada acción despachada.
+   * Lógica: Almacena la función de escucha y retorna un token único.
+   * Input: callback (Callback).
+   * Output: token (string).
    */
   register(callback: Callback): string {
     const token = `ID_${Math.random().toString(36).substring(2, 9)}`;
@@ -25,15 +27,20 @@ class Dispatcher {
   }
 
   /**
-   * Unregister a callback using the token returned from register()
+   * Elimina un callback usando el token retornado por register().
+   * Lógica: Remueve el registro del mapa de callbacks.
+   * Input: token (string).
+   * Output: void.
    */
   unregister(token: string): void {
     this.callbacks.delete(token);
   }
 
   /**
-   * Dispatch an action to all registered callbacks
-   * This is the central point where all actions flow through
+   * Despacha una acción a todos los callbacks registrados.
+   * Lógica: Punto central donde fluyen todas las acciones hacia los interesados.
+   * Input: action (Action).
+   * Output: void.
    */
   dispatch(action: Action): void {
     if (this.isDispatching) {
@@ -52,12 +59,14 @@ class Dispatcher {
   }
 
   /**
-   * Check if dispatcher is currently dispatching
+   * Verifica si el dispatcher está actualmente procesando una acción.
+   * Input: Ninguno.
+   * Output: boolean.
    */
   isDispatchingAction(): boolean {
     return this.isDispatching;
   }
 }
 
-// Singleton instance - there should only be one dispatcher in the app
+// Instancia Singleton - solo debe existir un dispatcher en la aplicación.
 export const AppDispatcher = new Dispatcher();
