@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getContacts } from '../mocks/api';
-import type { Contact } from '../mocks/api';
+import type { Contact } from '@poli/shared-types';
 import { Search, User } from 'lucide-react';
 
 interface Props {

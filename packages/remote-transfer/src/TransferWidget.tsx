@@ -5,7 +5,7 @@ import { postTransfer } from './mocks/api';
 import { StepRecipient } from './components/StepRecipient';
 import { StepAmount } from './components/StepAmount';
 import { StepConfirm } from './components/StepConfirm';
-import type { Contact } from './mocks/api';
+import type { Contact } from '@poli/shared-types';
 import { Check } from 'lucide-react';
 
 /**
@@ -25,29 +25,26 @@ const StepIndicator: React.FC<{ currentStep: number }> = ({ currentStep }) => {
           <React.Fragment key={step.number}>
             <div className="flex flex-col items-center flex-1">
               <div
-                className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-semibold text-sm sm:text-base transition-all duration-300 ${
-                  currentStep > step.number
+                className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-semibold text-sm sm:text-base transition-all duration-300 ${currentStep > step.number
                     ? 'bg-green-500 text-white shadow-md'
                     : currentStep === step.number
-                    ? 'bg-blue-600 text-white shadow-lg ring-4 ring-blue-200'
-                    : 'bg-gray-200 text-gray-500'
-                }`}
+                      ? 'bg-blue-600 text-white shadow-lg ring-4 ring-blue-200'
+                      : 'bg-gray-200 text-gray-500'
+                  }`}
               >
                 {currentStep > step.number ? <Check size={20} /> : step.number}
               </div>
               <p
-                className={`mt-2 text-xs sm:text-sm font-medium transition-colors duration-300 ${
-                  currentStep >= step.number ? 'text-gray-900' : 'text-gray-400'
-                } hidden sm:block`}
+                className={`mt-2 text-xs sm:text-sm font-medium transition-colors duration-300 ${currentStep >= step.number ? 'text-gray-900' : 'text-gray-400'
+                  } hidden sm:block`}
               >
                 {step.label}
               </p>
             </div>
             {index < steps.length - 1 && (
               <div
-                className={`flex-1 h-1 mx-2 rounded-full transition-all duration-300 ${
-                  currentStep > step.number ? 'bg-green-500' : 'bg-gray-200'
-                }`}
+                className={`flex-1 h-1 mx-2 rounded-full transition-all duration-300 ${currentStep > step.number ? 'bg-green-500' : 'bg-gray-200'
+                  }`}
               />
             )}
           </React.Fragment>

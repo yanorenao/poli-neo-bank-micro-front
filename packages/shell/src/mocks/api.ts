@@ -26,12 +26,12 @@ export const getBalance = async (): Promise<BalanceResponse> => {
 
 export const postTransfer = async (req: TransferRequest, currentBalance: number): Promise<TransferResponse> => {
   await delay(1200);
-  
+
   // Validate destination account format
   if (!req.destination || !/^\d{9}$/.test(req.destination)) {
     throw new Error('Cuenta destino inválida. Debe tener 9 dígitos.');
   }
-  
+
   if (req.amount <= 0) {
     throw new Error('El monto debe ser mayor a 0');
   }
@@ -42,11 +42,11 @@ export const postTransfer = async (req: TransferRequest, currentBalance: number)
 
   // Calculate new balance with proper precision
   const newBalance = Math.round((currentBalance - req.amount) * 100) / 100;
-  
+
   return {
     success: true,
     message: 'Transferencia exitosa',
-    transactionId: `TX-${Math.random().toString(36).slice(2, 11).padEnd(9, '0').toUpperCase()}`,
+    transactionId: `TX-${crypto.randomUUID().split('-')[0].toUpperCase()}`,
     newBalance,
   };
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Contact } from '../mocks/api';
+import type { Contact } from '@poli/shared-types';
 import { CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
 import type { UseMutationResult } from '@tanstack/react-query';
 

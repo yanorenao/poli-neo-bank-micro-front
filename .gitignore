@@ -40,3 +40,5 @@ dist/
 docs/
 INFORME.md
 informe.md
+.claude/
+.gemini/

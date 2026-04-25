@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Contact } from '../mocks/api';
+import type { Contact } from '@poli/shared-types';
 
 interface Props {
   recipient: Contact;
@@ -72,9 +72,8 @@ export const StepAmount: React.FC<Props> = ({ recipient, balance, onBack, onNext
                 setError('');
               }}
               placeholder="0"
-              className={`bg-transparent text-3xl sm:text-4xl font-bold text-blue-900 outline-none w-full text-center ${
-                error ? 'text-red-700' : ''
-              }`}
+              className={`bg-transparent text-3xl sm:text-4xl font-bold text-blue-900 outline-none w-full text-center ${error ? 'text-red-700' : ''
+                }`}
               aria-label="Monto a transferir"
             />
           </div>

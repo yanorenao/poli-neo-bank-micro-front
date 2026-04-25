@@ -24,6 +24,14 @@ export default defineConfig({
           singleton: true,
           requiredVersion: '^18.2.0',
         },
+        '@tanstack/react-query': {
+          singleton: true,
+          requiredVersion: '^5.0.0'
+        },
+        'react-router-dom': {
+          singleton: true,
+          requiredVersion: '^6.22.3',
+        },
       },
     }),
   ],

@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
 import type { IShellProps, Transaction } from '@poli/shared-types';
 import { RemoteFallback } from './components/RemoteErrorBoundary';
@@ -25,21 +25,7 @@ const queryClient = new QueryClient({
   },
 });
 
-/**
- * Hook para obtener el saldo desde el servidor.
- * Lógica: El QueryClient es singleton compartido — los remotes acceden al mismo caché.
- */
-function useBalanceQuery() {
-  return useQuery({
-    queryKey: ['balance'],
-    queryFn: async () => {
-      // Mock de desarrollo — reemplazar con fetch real en producción
-      await new Promise((r) => setTimeout(r, 600));
-      return { balance: 1540000 };
-    },
-    staleTime: 30_000,
-  });
-}
+import { useBalanceQuery } from './queries/bankQueries';
 
 /**
  * Header global con display del saldo.
@@ -93,13 +79,32 @@ function AppContent() {
   const { data } = useBalanceQuery();
   const balance = data?.balance ?? 0;
 
+  const queryClient = useQueryClient();
+
+  /**
+   * Callback real para procesar transacciones desde los remotos.
+   * Lógica: Actualiza el caché de balance de React Query de forma optimista.
+   *   - recipient.id === 'welcome' → crédito de bienvenida (suma al balance)
+   *   - cualquier otra tx → débito de transferencia (resta al balance)
+   */
+  const handleTransactionSubmit = async (tx: Omit<Transaction, 'id' | 'timestamp'>) => {
+    queryClient.setQueryData<{ balance: number }>(
+      ['balance'],
+      (prev) => {
+        const current = prev?.balance ?? 0;
+        const isCredit = tx.recipient.id === 'welcome';
+        const next = isCredit ? current + tx.amount : current - tx.amount;
+        return { balance: Math.max(0, Math.round(next)) };
+      }
+    );
+    // DW-02: Garantizar que el balance subyacente se invalida para refrescar desde el mock
+    await queryClient.invalidateQueries({ queryKey: ['balance'] });
+  };
+
   const shellProps: IShellProps = {
     balance,
     transactions: [],
-    onTransactionSubmit: async (tx) => {
-      // Placeholder — en producción dispatch a React Query mutation + invalidate balance
-      console.log('Transacción enviada al Shell:', tx);
-    },
+    onTransactionSubmit: handleTransactionSubmit,
   };
 
   const handleRemoteError = (error: Error, info: React.ErrorInfo) => {
