@@ -41,6 +41,37 @@
 
 El sistema ha evolucionado de un monolito a una arquitectura distribuida basada en dominios de negocio:
 
+```mermaid
+flowchart TD
+    classDef shell fill:#0f766e,stroke:#0d9488,color:#fff,stroke-width:2px
+    classDef remote fill:#f1f5f9,stroke:#94a3b8,color:#0f172a,stroke-width:2px
+    classDef singleton fill:#fef3c7,stroke:#f59e0b,color:#78350f,stroke-width:2px
+
+    subgraph "Host Application"
+        Shell["App Shell (5173)\nOrquestador"]:::shell
+        State["React Query\n(Única Fuente de Verdad)"]:::shell
+        Shell --- State
+    end
+
+    subgraph "Microfrontends (Remotes)"
+        R1["Remote Onboarding\n(5175)"]:::remote
+        R2["Remote Transfer\n(5174)"]:::remote
+    end
+
+    subgraph "Module Federation (Singletons)"
+        Deps["React, React Router, React Query"]:::singleton
+    end
+
+    Shell -- "Lazy Load (/)" --> R1
+    Shell -- "Lazy Load (/transfer)" --> R2
+
+    R1 -. "Consume Singleton" .-> Deps
+    R2 -. "Consume Singleton" .-> Deps
+    Shell -. "Provee dependencias" .-> Deps
+    
+    R2 -. "Llama onTransactionSubmit()" .-> State
+```
+
 ### 1. App Shell (Host)
 Funciona como el orquestador principal. Mantiene la "Única Fuente de la Verdad" del saldo del usuario utilizando React Query y gestiona el enrutamiento global (`react-router-dom`). Implementa Error Boundaries para aislar interrupciones de sub-dominios.
 
