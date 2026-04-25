@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Contact } from '../mocks/api';
 import { useBankStore } from '../hooks/useBankStoreHook';
-import { TransferActions } from '../flux/ActionCreators';
+import { useTransferMutation } from '../queries/bankQueries';
 import { CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
 import { btnPrimary, btnSecondary, avatarDefault } from '../styles/tailwindClasses';
 
@@ -13,22 +13,23 @@ interface Props {
 }
 
 export const StepConfirm: React.FC<Props> = ({ recipient, amount, onBack, onFinish }) => {
-    const { balance, transferError, transferSuccess, transactionId, transferLoading } = useBankStore();
+    const { balance } = useBankStore();
+    const transferMutation = useTransferMutation();
+
+    const transferLoading = transferMutation.isPending;
+    const transferError = transferMutation.error ? String(transferMutation.error) : null;
+    const transferSuccess = transferMutation.isSuccess;
+    const transactionId = transferMutation.data?.transactionId ?? null;
 
     const handleConfirm = () => {
         if (balance === null || balance === undefined) {
             return;
         }
-
-        // Dispatch transfer action through Flux architecture
-        TransferActions.executeTransfer(
-            { destination: recipient.account, amount },
-            balance
-        );
+        transferMutation.mutate({ request: { destination: recipient.account, amount }, currentBalance: balance });
     };
 
     const handleDone = () => {
-        TransferActions.resetTransfer();
+        transferMutation.reset();
         onFinish();
     };
 

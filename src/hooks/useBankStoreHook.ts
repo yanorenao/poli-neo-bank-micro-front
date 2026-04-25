@@ -1,48 +1,21 @@
 /**
- * Custom React Hook to connect components to Flux BankStore
- * Provides reactive subscriptions to store changes following Flux pattern
+ * Hook unificado que expone el estado bancario desde React Query.
+ * Lógica: Mantiene la misma API de retorno para compatibilidad con StepRecipient y StepAmount.
+ * El estado de transferencia (transferLoading, transferSuccess, etc.) fue movido a StepConfirm.
  */
 
-import { useEffect, useState } from 'react';
-import BankStore from '../flux/BankStore';
+import { useBalanceQuery, useContactsQuery } from '../queries/bankQueries';
 
-/**
- * Hook to subscribe to BankStore and trigger re-renders on changes
- * This is the "View" layer of Flux that listens to Store changes
- */
 export function useBankStore() {
-  const [, forceUpdate] = useState({});
+  const balanceQuery = useBalanceQuery();
+  const contactsQuery = useContactsQuery();
 
-  useEffect(() => {
-    const handleChange = () => {
-      forceUpdate({}); // Trigger re-render when store emits change
-    };
-
-    // Subscribe to store changes
-    BankStore.addChangeListener(handleChange);
-
-    // Cleanup: unsubscribe on unmount
-    return () => {
-      BankStore.removeChangeListener(handleChange);
-    };
-  }, []);
-
-  // Return store getters for components to use
   return {
-    // Balance
-    balance: BankStore.getBalance(),
-    balanceLoading: BankStore.isBalanceLoading(),
-    balanceError: BankStore.getBalanceError(),
-
-    // Contacts
-    contacts: BankStore.getContacts(),
-    contactsLoading: BankStore.isContactsLoading(),
-    contactsError: BankStore.getContactsError(),
-
-    // Transfer
-    transferLoading: BankStore.isTransferLoading(),
-    transferError: BankStore.getTransferError(),
-    transferSuccess: BankStore.isTransferSuccess(),
-    transactionId: BankStore.getTransactionId(),
+    balance: balanceQuery.data?.balance ?? null,
+    balanceLoading: balanceQuery.isPending,
+    balanceError: balanceQuery.error ? String(balanceQuery.error) : null,
+    contacts: contactsQuery.data ?? [],
+    contactsLoading: contactsQuery.isPending,
+    contactsError: contactsQuery.error ? String(contactsQuery.error) : null,
   };
 }
