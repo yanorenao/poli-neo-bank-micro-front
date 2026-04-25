@@ -14,16 +14,17 @@
 
 ## 📑 Tabla de Contenidos
 
-- [Tecnologías Principales](#-tecnologias-principales)
-- [Arquitectura de Microfrontends](#-arquitectura-de-microfrontends)
-- [Decisiones de Diseño](#-decisiones-de-diseno)
-- [Estructura del Proyecto (Monorepo)](#-estructura-del-proyecto-monorepo)
-- [Configuración y Ejecución](#-configuracion-y-ejecucion)
-- [Testing](#-testing)
-- [Autor](#-autor)
+- [Tecnologías Principales](#tecnologias)
+- [Arquitectura de Microfrontends](#arquitectura)
+- [Decisiones de Diseño](#decisiones)
+- [Estructura del Proyecto (Monorepo)](#estructura)
+- [Configuración y Ejecución](#configuracion)
+- [Testing](#testing)
+- [Autor](#autor)
 
 ---
 
+<a id="tecnologias"></a>
 ## 🚀 Tecnologías Principales
 
 | Tecnología | Versión | Propósito |
@@ -37,6 +38,7 @@
 
 ---
 
+<a id="arquitectura"></a>
 ## 🏛️ Arquitectura de Microfrontends
 
 El sistema ha evolucionado de un monolito a una arquitectura distribuida basada en dominios de negocio:
@@ -87,6 +89,7 @@ Microfrontend enfocado en el `TransferWizard`, manejando la selección de destin
 
 ---
 
+<a id="decisiones"></a>
 ## 🧠 Decisiones de Diseño
 
 ### ¿Por qué React Query en lugar del antiguo modelo Flux/Zustand?
@@ -97,6 +100,7 @@ La navegación principal reside en el App Shell (`/` para Onboarding y `/transfe
 
 ---
 
+<a id="estructura"></a>
 ## 📁 Estructura del Proyecto (Monorepo)
 
 ```text
@@ -116,6 +120,7 @@ packages/
 
 ---
 
+<a id="configuracion"></a>
 ## 🛠️ Configuración y Ejecución
 
 ### Requisitos Previos
@@ -150,6 +155,7 @@ pnpm build:all
 
 ---
 
+<a id="testing"></a>
 ## 🧪 Testing
 
 El ecosistema está construido con **Vitest** y **Testing Library**.
@@ -161,6 +167,7 @@ pnpm test:shell
 
 ---
 
+<a id="autor"></a>
 ## 👤 Autor
 
 **Yeison Noreña Osorio**
